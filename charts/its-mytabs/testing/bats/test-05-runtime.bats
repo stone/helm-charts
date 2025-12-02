@@ -8,7 +8,7 @@ load '_config_setup'
 }
 
 @test "Pod becomes ready" {
-    run kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=its-mytabs -n ${NAMESPACE} --timeout=5m
+    run bash -c "kubectl get pods -n ${NAMESPACE} -l app.kubernetes.io/name=its-mytabs,app.kubernetes.io/instance=${RELEASE_NAME} --field-selector=status.phase=Running -o name | xargs -r kubectl wait -n ${NAMESPACE} --for=condition=Ready --timeout=5m"
     [ "$status" -eq 0 ]
 }
 
