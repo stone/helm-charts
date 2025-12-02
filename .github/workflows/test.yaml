@@ -1,0 +1,114 @@
+name: Test Charts
+
+on:
+  pull_request:
+    paths:
+      - 'charts/**'
+  push:
+    branches:
+      - master
+    paths:
+      - 'charts/**'
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      charts: ${{ steps.list-changed.outputs.charts }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          fetch-depth: 0
+
+      - name: List changed charts
+        id: list-changed
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            # On manual trigger, test all charts
+            charts=$(find charts -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
+          else
+            # Detect changed charts
+            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null || echo "")
+            if [ -z "$changed_files" ]; then
+              # Fallback for PRs
+              changed_files=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            fi
+            charts=$(echo "$changed_files" | grep '^charts/' | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
+          fi
+
+          echo "charts=$charts" >> $GITHUB_OUTPUT
+          echo "Changed charts: $charts"
+
+  lint:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.charts != '[]' && needs.detect-changes.outputs.charts != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: ${{ fromJson(needs.detect-changes.outputs.charts) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Set up Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4
+
+      - name: Lint chart
+        run: |
+          helm lint charts/${{ matrix.chart }}
+
+  bats-test:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.charts != '[]' && needs.detect-changes.outputs.charts != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: ${{ fromJson(needs.detect-changes.outputs.charts) }}
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Check if BATS tests exist
+        id: check-tests
+        run: |
+          if [ -d "charts/${{ matrix.chart }}/testing/bats" ]; then
+            echo "has_tests=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_tests=false" >> $GITHUB_OUTPUT
+            echo "No BATS tests found for ${{ matrix.chart }}, skipping..."
+          fi
+
+      - name: Set up Helm
+        if: steps.check-tests.outputs.has_tests == 'true'
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4
+
+      - name: Create KinD cluster
+        if: steps.check-tests.outputs.has_tests == 'true'
+        uses: helm/kind-action@0025e74a8c7512023d06dc019c617aa3cf561fde # v1.10.0
+        with:
+          cluster_name: ${{ matrix.chart }}-test
+          wait: 60s
+          config: charts/${{ matrix.chart }}/testing/kind-config.yaml
+
+      - name: Install BATS
+        if: steps.check-tests.outputs.has_tests == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bats
+
+      - name: Install yq
+        if: steps.check-tests.outputs.has_tests == 'true'
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Run BATS tests
+        if: steps.check-tests.outputs.has_tests == 'true'
+        run: |
+          cd charts/${{ matrix.chart }}/testing/bats
+          bats test-helm-chart.bats
+        env:
+          DEBUG: "1"

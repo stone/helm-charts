@@ -1,0 +1,104 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "labels": ["dependencies", "renovate"],
+  "baseBranches": ["master"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "commitMessagePrefix": "chore(deps):",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "packageRules": [
+    {
+      "description": "Helm chart dependencies - major updates",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "helm", "major-update"],
+      "automerge": false,
+      "commitMessagePrefix": "chore(helm):",
+      "commitMessageExtra": "to {{newVersion}}"
+    },
+    {
+      "description": "Helm chart dependencies - minor and patch updates",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "helm"],
+      "automerge": false,
+      "commitMessagePrefix": "chore(helm):",
+      "commitMessageExtra": "to {{newVersion}}"
+    },
+    {
+      "description": "Docker images - major updates",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "labels": ["dependencies", "docker", "major-update"],
+      "automerge": false,
+      "commitMessagePrefix": "chore(docker):",
+      "commitMessageExtra": "to {{newVersion}}"
+    },
+    {
+      "description": "Docker images - minor and patch updates",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "labels": ["dependencies", "docker"],
+      "automerge": false,
+      "commitMessagePrefix": "chore(docker):",
+      "commitMessageExtra": "to {{newVersion}}"
+    },
+    {
+      "description": "GitHub Actions - minor and patch updates with automerge",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "labels": ["dependencies", "github-actions"],
+      "commitMessagePrefix": "chore(ci):",
+      "commitMessageExtra": "to {{newVersion}}"
+    },
+    {
+      "description": "GitHub Actions - major updates",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "github-actions", "major-update"],
+      "commitMessagePrefix": "chore(ci):",
+      "commitMessageExtra": "to {{newVersion}}"
+    }
+  ],
+  "helm-values": {
+    "fileMatch": ["charts/.+/values\\.ya?ml$"]
+  },
+  "helmv3": {
+    "fileMatch": ["charts/.+/Chart\\.ya?ml$"]
+  },
+  "regexManagers": [
+    {
+      "description": "Update Docker image tags in values.yaml files",
+      "fileMatch": ["charts/.+/values\\.ya?ml$"],
+      "matchStrings": [
+        "repository:\\s+(?<depName>[^\\s]+)\\n\\s+tag:\\s+[\"']?(?<currentValue>[^\"'\\s]+)[\"']?",
+        "image:\\s+(?<depName>[^:]+):(?<currentValue>[^\\s]+)"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "description": "Update appVersion in Chart.yaml when matching Docker image",
+      "fileMatch": ["charts/.+/Chart\\.ya?ml$"],
+      "matchStrings": [
+        "appVersion:\\s+[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "depNameTemplate": "louislam/its-mytabs",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "vulnerability"]
+  },
+  "osvVulnerabilityAlerts": true
+}

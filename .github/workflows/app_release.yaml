@@ -1,0 +1,120 @@
+name: Bump Helm Chart Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      chart_name:
+        description: "Chart name (e.g., its-mytabs)"
+        required: true
+        type: string
+      app_version:
+        description: "Application version to set in Chart.yaml"
+        required: true
+        type: string
+      bump_type:
+        description: "Version bump type"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: "minor"
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: 3.x
+
+      - name: Validate chart exists
+        run: |
+          if [ ! -f "charts/${{ github.event.inputs.chart_name }}/Chart.yaml" ]; then
+            echo "Error: Chart 'charts/${{ github.event.inputs.chart_name }}' does not exist"
+            exit 1
+          fi
+
+      - name: Bump chart version and set appVersion
+        id: bump_version
+        run: |
+          CHART_PATH="charts/${{ github.event.inputs.chart_name }}/Chart.yaml"
+
+          # Read the current version from the Chart.yaml
+          current_version=$(grep '^version:' "$CHART_PATH" | awk '{print $2}')
+          echo "Current version: $current_version"
+
+          # Split the version by dot
+          IFS='.' read -r major minor patch <<< "$current_version"
+
+          # Remove any non-numeric characters
+          major=$(echo "$major" | tr -dc '0-9')
+          minor=$(echo "$minor" | tr -dc '0-9')
+          patch=$(echo "$patch" | tr -dc '0-9')
+
+          # Bump version based on type
+          case "${{ github.event.inputs.bump_type }}" in
+            major)
+              new_version="$((major + 1)).0.0"
+              ;;
+            minor)
+              new_version="$major.$((minor + 1)).0"
+              ;;
+            patch)
+              new_version="$major.$minor.$((patch + 1))"
+              ;;
+            *)
+              echo "Invalid bump type"
+              exit 1
+              ;;
+          esac
+
+          echo "New chart version: $new_version"
+
+          # Get the app version passed as an input
+          app_version="${{ github.event.inputs.app_version }}"
+          echo "Setting appVersion to: $app_version"
+
+          # Update Chart.yaml
+          sed -i "s/^version:.*/version: $new_version/" "$CHART_PATH"
+          sed -i "s/^appVersion:.*/appVersion: \"$app_version\"/" "$CHART_PATH"
+
+          # Output the new chart version for further use
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "chart_name=${{ github.event.inputs.chart_name }}" >> $GITHUB_OUTPUT
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add charts/${{ steps.bump_version.outputs.chart_name }}/Chart.yaml
+          git commit -m "chore(${{ steps.bump_version.outputs.chart_name }}): bump chart to ${{ steps.bump_version.outputs.new_version }} with app version ${{ github.event.inputs.app_version }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.BOT_TOKEN }}
+          branch: ${{ github.ref }}
+
+      - name: Create and push tag
+        run: |
+          TAG="${{ steps.bump_version.outputs.chart_name }}-${{ steps.bump_version.outputs.new_version }}"
+          git tag "$TAG"
+          echo "Created tag: $TAG"
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+
+      - name: Push tag
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.BOT_TOKEN }}
+          tags: true
