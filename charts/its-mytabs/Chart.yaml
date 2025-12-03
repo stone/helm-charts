@@ -2,7 +2,7 @@ apiVersion: v2
 name: its-mytabs
 description: A Helm chart for its-mytabs
 type: application
-version: 0.0.2
+version: 0.0.4
 appVersion: "1.0.1"
 icon: https://raw.githubusercontent.com/louislam/its-mytabs/refs/heads/master/frontend/public/favicon.ico
 home: https://github.com/louislam/its-mytabs
