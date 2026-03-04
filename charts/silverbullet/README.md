@@ -6,12 +6,6 @@ A Helm chart for SilverBullet - a modern, self-contained note-taking and persona
 
 **Homepage:** <https://silverbullet.md>
 
-## Maintainers
-
-| Name | Email | Url |
-| ---- | ------ | --- |
-| Fredrik Steen |  |  |
-
 ## Source Code
 
 * <https://github.com/silverbulletmd/silverbullet>
