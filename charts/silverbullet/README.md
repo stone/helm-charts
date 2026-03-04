@@ -1,227 +1,134 @@
-# SilverBullet Helm Chart
+# silverbullet
 
-A Helm chart for deploying [SilverBullet](https://silverbullet.md), a modern, self-contained note-taking and personal knowledge management system.
+![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square)
 
-## Prerequisites
+A Helm chart for SilverBullet - a modern, self-contained note-taking and personal knowledge management system
 
-- Kubernetes 1.19+
-- Helm 3.2.0+
-- PV provisioner support in the underlying infrastructure for persistence
+**Homepage:** <https://silverbullet.md>
 
-## Installing the Chart
+## Maintainers
 
-To install the chart with the release name `my-silverbullet`:
+| Name | Email | Url |
+| ---- | ------ | --- |
+| Fredrik Steen |  |  |
 
-```bash
-helm install my-silverbullet .
-```
+## Source Code
 
-Or from the repository root:
+* <https://github.com/silverbulletmd/silverbullet>
 
-```bash
-helm install my-silverbullet ./charts/silverbullet
-```
+## Values
 
-## Uninstalling the Chart
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| affinity | object | `{}` |  |
+| autoscaling.enabled | bool | `false` |  |
+| autoscaling.maxReplicas | int | `100` |  |
+| autoscaling.minReplicas | int | `1` |  |
+| autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| fullnameOverride | string | `""` |  |
+| gateway.annotations | object | `{}` |  |
+| gateway.enabled | bool | `false` |  |
+| gateway.existingGateway | string | `""` |  |
+| gateway.gatewayClassName | string | `""` |  |
+| gateway.httpRoute.annotations | object | `{}` |  |
+| gateway.httpRoute.hostnames[0] | string | `"silverbullet.local"` |  |
+| gateway.httpRoute.labels | object | `{}` |  |
+| gateway.httpRoute.rules[0].matches[0].path.type | string | `"PathPrefix"` |  |
+| gateway.httpRoute.rules[0].matches[0].path.value | string | `"/"` |  |
+| gateway.httpRoute.tls.enabled | bool | `false` |  |
+| gateway.labels | object | `{}` |  |
+| gateway.listeners[0].name | string | `"http"` |  |
+| gateway.listeners[0].port | int | `80` |  |
+| gateway.listeners[0].protocol | string | `"HTTP"` |  |
+| image.pullPolicy | string | `"IfNotPresent"` |  |
+| image.repository | string | `"ghcr.io/silverbulletmd/silverbullet"` |  |
+| image.tag | string | `""` |  |
+| imagePullSecrets | list | `[]` |  |
+| ingress.annotations | object | `{}` |  |
+| ingress.className | string | `""` |  |
+| ingress.enabled | bool | `false` |  |
+| ingress.hosts[0].host | string | `"silverbullet.local"` |  |
+| ingress.hosts[0].paths[0].path | string | `"/"` |  |
+| ingress.hosts[0].paths[0].pathType | string | `"Prefix"` |  |
+| ingress.tls | list | `[]` |  |
+| livenessProbe.failureThreshold | int | `3` |  |
+| livenessProbe.httpGet.path | string | `"/"` |  |
+| livenessProbe.httpGet.port | string | `"http"` |  |
+| livenessProbe.initialDelaySeconds | int | `30` |  |
+| livenessProbe.periodSeconds | int | `10` |  |
+| livenessProbe.timeoutSeconds | int | `5` |  |
+| nameOverride | string | `""` |  |
+| networkPolicy.egress[0].ports[0].port | int | `53` |  |
+| networkPolicy.egress[0].ports[0].protocol | string | `"UDP"` |  |
+| networkPolicy.egress[0].to[0].namespaceSelector.matchLabels.name | string | `"kube-system"` |  |
+| networkPolicy.enabled | bool | `false` |  |
+| networkPolicy.ingress[0].from[0].namespaceSelector.matchLabels.name | string | `"ingress-nginx"` |  |
+| networkPolicy.ingress[0].ports[0].port | int | `3000` |  |
+| networkPolicy.ingress[0].ports[0].protocol | string | `"TCP"` |  |
+| nodeSelector | object | `{}` |  |
+| persistence.accessMode | string | `"ReadWriteOnce"` |  |
+| persistence.annotations | object | `{}` |  |
+| persistence.enabled | bool | `true` |  |
+| persistence.size | string | `"5Gi"` |  |
+| persistence.storageClass | string | `""` |  |
+| podAnnotations | object | `{}` |  |
+| podLabels | object | `{}` |  |
+| podSecurityContext.fsGroup | int | `1000` |  |
+| podSecurityContext.fsGroupChangePolicy | string | `"OnRootMismatch"` |  |
+| podSecurityContext.runAsGroup | int | `1000` |  |
+| podSecurityContext.runAsNonRoot | bool | `true` |  |
+| podSecurityContext.runAsUser | int | `1000` |  |
+| podSecurityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| readinessProbe.failureThreshold | int | `3` |  |
+| readinessProbe.httpGet.path | string | `"/"` |  |
+| readinessProbe.httpGet.port | string | `"http"` |  |
+| readinessProbe.initialDelaySeconds | int | `10` |  |
+| readinessProbe.periodSeconds | int | `5` |  |
+| readinessProbe.timeoutSeconds | int | `3` |  |
+| replicaCount | int | `1` |  |
+| resources.limits.cpu | string | `"500m"` |  |
+| resources.limits.memory | string | `"512Mi"` |  |
+| resources.requests.cpu | string | `"100m"` |  |
+| resources.requests.memory | string | `"128Mi"` |  |
+| securityContext.allowPrivilegeEscalation | bool | `false` |  |
+| securityContext.capabilities.drop[0] | string | `"ALL"` |  |
+| securityContext.readOnlyRootFilesystem | bool | `true` |  |
+| securityContext.runAsGroup | int | `1000` |  |
+| securityContext.runAsNonRoot | bool | `true` |  |
+| securityContext.runAsUser | int | `1000` |  |
+| securityContext.seccompProfile.type | string | `"RuntimeDefault"` |  |
+| service.annotations | object | `{}` |  |
+| service.labels | object | `{}` |  |
+| service.nodePort | string | `""` |  |
+| service.port | int | `3000` |  |
+| service.type | string | `"ClusterIP"` |  |
+| serviceAccount.annotations | object | `{}` |  |
+| serviceAccount.automount | bool | `false` |  |
+| serviceAccount.create | bool | `true` |  |
+| serviceAccount.name | string | `""` |  |
+| silverbullet.auth.lockoutLimit | int | `10` |  |
+| silverbullet.auth.lockoutTime | int | `60` |  |
+| silverbullet.auth.password | string | `""` |  |
+| silverbullet.auth.rememberMeHours | int | `168` |  |
+| silverbullet.auth.token | string | `""` |  |
+| silverbullet.auth.username | string | `""` |  |
+| silverbullet.description | string | `"SilverBullet - Personal Knowledge Management"` |  |
+| silverbullet.extraEnv | list | `[]` |  |
+| silverbullet.extraEnvFrom | list | `[]` |  |
+| silverbullet.httpLogging | bool | `false` |  |
+| silverbullet.indexPage | string | `"index"` |  |
+| silverbullet.logPush | bool | `false` |  |
+| silverbullet.metrics.enabled | bool | `false` |  |
+| silverbullet.metrics.port | int | `9090` |  |
+| silverbullet.name | string | `"SilverBullet"` |  |
+| silverbullet.readOnly | bool | `false` |  |
+| silverbullet.shellBackend | string | `"local"` |  |
+| silverbullet.shellWhitelist | string | `""` |  |
+| silverbullet.spaceIgnore | string | `""` |  |
+| silverbullet.urlPrefix | string | `""` |  |
+| tolerations | list | `[]` |  |
+| volumeMounts | list | `[]` |  |
+| volumes | list | `[]` |  |
 
-To uninstall/delete the `my-silverbullet` deployment:
-
-```bash
-helm delete my-silverbullet
-```
-
-## Configuration
-
-The following table lists the configurable parameters of the SilverBullet chart and their default values.
-
-### General Parameters
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `replicaCount` | Number of SilverBullet replicas | `1` |
-| `image.repository` | SilverBullet image repository | `ghcr.io/silverbulletmd/silverbullet` |
-| `image.pullPolicy` | Image pull policy | `IfNotPresent` |
-| `image.tag` | Image tag (overrides chart appVersion) | `""` |
-| `nameOverride` | Override chart name | `""` |
-| `fullnameOverride` | Override full release name | `""` |
-
-### Service Account
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `serviceAccount.create` | Create service account | `true` |
-| `serviceAccount.annotations` | Service account annotations | `{}` |
-| `serviceAccount.name` | Service account name | `""` |
-
-### Security
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `serviceAccount.automount` | Automount service account token | `false` |
-| `podSecurityContext.runAsUser` | Pod security context runAsUser | `1000` |
-| `podSecurityContext.runAsGroup` | Pod security context runAsGroup | `1000` |
-| `podSecurityContext.runAsNonRoot` | Run as non-root user | `true` |
-| `podSecurityContext.fsGroup` | Pod security context fsGroup | `1000` |
-| `podSecurityContext.fsGroupChangePolicy` | fsGroup change policy | `"OnRootMismatch"` |
-| `podSecurityContext.seccompProfile.type` | Seccomp profile type | `RuntimeDefault` |
-| `securityContext.allowPrivilegeEscalation` | Allow privilege escalation | `false` |
-| `securityContext.runAsNonRoot` | Run as non-root user | `true` |
-| `securityContext.runAsUser` | Container runAsUser | `1000` |
-| `securityContext.runAsGroup` | Container runAsGroup | `1000` |
-| `securityContext.readOnlyRootFilesystem` | Read-only root filesystem | `true` |
-| `securityContext.capabilities.drop` | Dropped capabilities | `["ALL"]` |
-| `securityContext.seccompProfile.type` | Container seccomp profile | `RuntimeDefault` |
-
-### Network Policy
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
-| `networkPolicy.ingress` | Ingress rules | See values.yaml |
-| `networkPolicy.egress` | Egress rules | See values.yaml |
-
-### Service
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `service.type` | Kubernetes service type (ClusterIP, NodePort, LoadBalancer) | `ClusterIP` |
-| `service.port` | Service port | `3000` |
-| `service.nodePort` | NodePort to use when service.type is NodePort | `""` |
-| `service.annotations` | Service annotations | `{}` |
-| `service.labels` | Additional service labels | `{}` |
-
-### Ingress
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `ingress.enabled` | Enable ingress | `false` |
-| `ingress.className` | Ingress class name | `""` |
-| `ingress.annotations` | Ingress annotations | `{}` |
-| `ingress.hosts` | Ingress hosts configuration | `[{host: "silverbullet.local", paths: [{path: "/", pathType: "Prefix"}]}]` |
-| `ingress.tls` | Ingress TLS configuration | `[]` |
-
-### Gateway API
-
-Gateway API is a modern alternative to Ingress. Requires Gateway API CRDs to be installed.
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `gateway.enabled` | Enable Gateway API resources | `false` |
-| `gateway.existingGateway` | Name of existing Gateway to attach to | `""` |
-| `gateway.gatewayClassName` | Gateway class name (when creating new Gateway) | `""` |
-| `gateway.annotations` | Gateway annotations | `{}` |
-| `gateway.labels` | Gateway labels | `{}` |
-| `gateway.listeners` | Gateway listeners configuration | `[{name: "http", port: 80, protocol: "HTTP"}]` |
-| `gateway.httpRoute.annotations` | HTTPRoute annotations | `{}` |
-| `gateway.httpRoute.labels` | HTTPRoute labels | `{}` |
-| `gateway.httpRoute.hostnames` | HTTPRoute hostnames | `["silverbullet.local"]` |
-| `gateway.httpRoute.rules` | HTTPRoute rules configuration | `[{matches: [{path: {type: "PathPrefix", value: "/"}}]}]` |
-
-### Resources
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `resources.limits.cpu` | CPU limit | `500m` |
-| `resources.limits.memory` | Memory limit | `512Mi` |
-| `resources.requests.cpu` | CPU request | `100m` |
-| `resources.requests.memory` | Memory request | `128Mi` |
-
-### Persistence
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `persistence.enabled` | Enable persistence | `true` |
-| `persistence.existingClaim` | Use existing PVC | `""` |
-| `persistence.storageClass` | Storage class | `""` |
-| `persistence.accessMode` | Access mode | `ReadWriteOnce` |
-| `persistence.size` | Storage size | `5Gi` |
-
-### SilverBullet Configuration
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `silverbullet.auth.username` | Authentication username | `""` |
-| `silverbullet.auth.password` | Authentication password | `""` |
-| `silverbullet.auth.token` | Bearer token for authentication | `""` |
-| `silverbullet.auth.existingSecret` | Use existing secret for auth | `""` |
-| `silverbullet.indexPage` | Default page to load | `"index"` |
-| `silverbullet.readOnly` | Enable read-only mode | `false` |
-| `silverbullet.httpLogging` | Enable HTTP request logging | `false` |
-| `silverbullet.metrics.enabled` | Enable Prometheus metrics | `false` |
-| `silverbullet.metrics.port` | Metrics port | `9090` |
-
-## Example: Installing with Custom Values
-
-Create a `values.yaml` file:
-
-```yaml
-ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: notes.example.com
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: silverbullet-tls
-      hosts:
-        - notes.example.com
-
-silverbullet:
-  auth:
-    username: admin
-    password: your-secure-password
-
-persistence:
-  size: 10Gi
-  storageClass: fast-ssd
-
-resources:
-  limits:
-    cpu: 1000m
-    memory: 1Gi
-  requests:
-    cpu: 200m
-    memory: 256Mi
-```
-
-Install the chart:
-
-```bash
-helm install my-silverbullet . -f values.yaml
-```
-
-### Authentication (REQUIRED for Production)
-
-**IMPORTANT**: By default, SilverBullet runs without authentication, which is
-not recommended for production use. Always set authentication credentials:
-
-```yaml
-silverbullet:
-  auth:
-    username: your-username
-    password: your-secure-password
-```
-
-Or use an existing Kubernetes secret (recommended):
-
-```bash
-kubectl create secret generic silverbullet-auth \
-  --from-literal=sb-user='username:password'
-```
-
-```yaml
-silverbullet:
-  auth:
-    existingSecret: silverbullet-auth
-```
-
-## Links
-
-- [SilverBullet Documentation](https://silverbullet.md)
-- [SilverBullet GitHub](https://github.com/silverbulletmd/silverbullet)
-- [Docker Installation Guide](https://silverbullet.md/Install/Docker)
-- [Configuration Reference](https://silverbullet.md/Install/Configuration)
+----------------------------------------------
+Autogenerated from chart metadata using [helm-docs v1.14.2](https://github.com/norwoodj/helm-docs/releases/v1.14.2)
