@@ -1,0 +1,97 @@
+# Example production values for SilverBullet
+# This file demonstrates a typical production configuration
+
+# Enable ingress for external access
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  hosts:
+    - host: notes.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: silverbullet-tls
+      hosts:
+        - notes.example.com
+
+# Configure authentication (REQUIRED for production!)
+silverbullet:
+  auth:
+    username: admin
+    password: your-secure-password-here  # Change this!
+    lockoutLimit: 5
+    lockoutTime: 300  # 5 minutes
+    rememberMeHours: 168  # 7 days
+
+  # Enable HTTP logging for debugging
+  httpLogging: true
+
+  # Enable metrics for monitoring
+  metrics:
+    enabled: true
+    port: 9090
+
+  # Customize the app name
+  name: "My Knowledge Base"
+  description: "Personal note-taking system"
+
+# Increase storage for production use
+persistence:
+  enabled: true
+  size: 20Gi
+  storageClass: fast-ssd  # Use your preferred storage class
+  accessMode: ReadWriteOnce
+
+# Increase resources for better performance
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Configure health checks
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Pod annotations for monitoring
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "9090"
+  prometheus.io/path: "/metrics"
+
+# Security context
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false

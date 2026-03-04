@@ -1,0 +1,38 @@
+# Example using NodePort service type for direct access
+# Useful for development, testing, or clusters without ingress
+
+# Basic authentication
+silverbullet:
+  auth:
+    username: admin
+    password: admin123
+
+# Configure NodePort service
+service:
+  type: NodePort
+  port: 3000
+  # Specify a specific NodePort (optional, must be in range 30000-32767)
+  # If not specified, Kubernetes will auto-assign
+  nodePort: 30000
+
+  # Optional: Add service annotations
+  annotations:
+    description: "SilverBullet NodePort Service"
+
+  # Optional: Add custom labels
+  labels:
+    environment: development
+
+# Smaller resources for local testing
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Persistence
+persistence:
+  enabled: true
+  size: 1Gi

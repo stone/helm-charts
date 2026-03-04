@@ -1,0 +1,39 @@
+{{- if .Values.gateway.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "silverbullet.fullname" . }}
+  labels:
+    {{- include "silverbullet.labels" . | nindent 4 }}
+    {{- with .Values.gateway.httpRoute.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.gateway.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.gateway.existingGateway }}
+  parentRefs:
+  - name: {{ .Values.gateway.existingGateway }}
+  {{- else }}
+  parentRefs:
+  - name: {{ include "silverbullet.fullname" . }}
+  {{- end }}
+  {{- with .Values.gateway.httpRoute.hostnames }}
+  hostnames:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  rules:
+  {{- range .Values.gateway.httpRoute.rules }}
+  - matches:
+    {{- toYaml .matches | nindent 4 }}
+    {{- if .filters }}
+    filters:
+      {{- toYaml .filters | nindent 4 }}
+    {{- end }}
+    backendRefs:
+    - name: {{ include "silverbullet.fullname" $ }}
+      port: {{ $.Values.service.port }}
+  {{- end }}
+{{- end }}

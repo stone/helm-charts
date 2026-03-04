@@ -1,0 +1,169 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "silverbullet.fullname" . }}
+  labels:
+    {{- include "silverbullet.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "silverbullet.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "silverbullet.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "silverbullet.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: {{ include "silverbullet.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        {{- if .Values.silverbullet.metrics.enabled }}
+        - name: metrics
+          containerPort: {{ .Values.silverbullet.metrics.port }}
+          protocol: TCP
+        {{- end }}
+        env:
+        - name: SB_FOLDER
+          value: "/space"
+        - name: SB_PORT
+          value: "3000"
+        {{- if or .Values.silverbullet.auth.username .Values.silverbullet.auth.existingSecret }}
+        - name: SB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "silverbullet.authSecretName" . }}
+              key: {{ .Values.silverbullet.auth.existingSecretUsernameKey | default "sb-user" }}
+              optional: true
+        {{- end }}
+        {{- if or .Values.silverbullet.auth.token .Values.silverbullet.auth.existingSecret }}
+        - name: SB_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "silverbullet.authSecretName" . }}
+              key: {{ .Values.silverbullet.auth.existingSecretTokenKey | default "sb-token" }}
+              optional: true
+        {{- end }}
+        {{- if .Values.silverbullet.indexPage }}
+        - name: SB_INDEX_PAGE
+          value: {{ .Values.silverbullet.indexPage | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.spaceIgnore }}
+        - name: SB_SPACE_IGNORE
+          value: {{ .Values.silverbullet.spaceIgnore | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.httpLogging }}
+        - name: SB_HTTP_LOGGING
+          value: "true"
+        {{- end }}
+        {{- if .Values.silverbullet.logPush }}
+        - name: SB_LOG_PUSH
+          value: "true"
+        {{- end }}
+        {{- if .Values.silverbullet.urlPrefix }}
+        - name: SB_URL_PREFIX
+          value: {{ .Values.silverbullet.urlPrefix | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.readOnly }}
+        - name: SB_READ_ONLY
+          value: "true"
+        {{- end }}
+        {{- if .Values.silverbullet.shellBackend }}
+        - name: SB_SHELL_BACKEND
+          value: {{ .Values.silverbullet.shellBackend | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.shellWhitelist }}
+        - name: SB_SHELL_WHITELIST
+          value: {{ .Values.silverbullet.shellWhitelist | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.metrics.enabled }}
+        - name: SB_METRICS_PORT
+          value: {{ .Values.silverbullet.metrics.port | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.name }}
+        - name: SB_NAME
+          value: {{ .Values.silverbullet.name | quote }}
+        {{- end }}
+        {{- if .Values.silverbullet.description }}
+        - name: SB_DESCRIPTION
+          value: {{ .Values.silverbullet.description | quote }}
+        {{- end }}
+        - name: SB_LOCKOUT_LIMIT
+          value: {{ .Values.silverbullet.auth.lockoutLimit | quote }}
+        - name: SB_LOCKOUT_TIME
+          value: {{ .Values.silverbullet.auth.lockoutTime | quote }}
+        - name: SB_REMEMBER_ME_HOURS
+          value: {{ .Values.silverbullet.auth.rememberMeHours | quote }}
+        {{- with .Values.silverbullet.extraEnv }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.silverbullet.extraEnvFrom }}
+        envFrom:
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.livenessProbe }}
+        livenessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.readinessProbe }}
+        readinessProbe:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /space
+        - name: tmp
+          mountPath: /tmp
+        {{- with .Values.volumeMounts }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      volumes:
+      - name: data
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ include "silverbullet.pvcName" . }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: tmp
+        emptyDir: {}
+      {{- with .Values.volumes }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

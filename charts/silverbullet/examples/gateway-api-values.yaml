@@ -1,0 +1,62 @@
+# Example using Gateway API instead of Ingress
+# Requires Gateway API CRDs to be installed
+# kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
+
+# Basic authentication
+silverbullet:
+  auth:
+    username: admin
+    password: your-secure-password
+
+# Enable Gateway API
+gateway:
+  enabled: true
+
+  # Option 1: Use an existing Gateway
+  # If you already have a Gateway configured in your cluster
+  # existingGateway: "my-gateway"
+
+  # Option 2: Create a new Gateway (comment out existingGateway above)
+  existingGateway: ""
+  gatewayClassName: "istio"  # or "nginx", "envoy", etc.
+
+  # Gateway listeners configuration
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      # Optional: restrict to specific hostname
+      # hostname: "*.example.com"
+
+  # HTTPRoute configuration
+  httpRoute:
+    # Annotations for the HTTPRoute
+    annotations: {}
+
+    # Labels for the HTTPRoute
+    labels: {}
+
+    # Hostnames to match
+    hostnames:
+      - notes.example.com
+
+    # Routing rules
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+
+# Production resources
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+# Persistence
+persistence:
+  enabled: true
+  size: 10Gi

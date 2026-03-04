@@ -1,0 +1,22 @@
+# Minimal configuration for local testing
+# This provides a quick start for development/testing
+
+# Basic authentication
+silverbullet:
+  auth:
+    username: admin
+    password: admin123
+
+# Smaller resource requests for local testing
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Smaller storage for testing
+persistence:
+  enabled: true
+  size: 1Gi

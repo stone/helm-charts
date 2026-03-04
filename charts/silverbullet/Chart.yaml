@@ -1,0 +1,18 @@
+apiVersion: v2
+name: silverbullet
+description: A Helm chart for SilverBullet - a modern, self-contained note-taking and personal knowledge management system
+type: application
+version: 0.1.0
+appVersion: "latest"
+home: https://silverbullet.md
+sources:
+  - https://github.com/silverbulletmd/silverbullet
+keywords:
+  - silverbullet
+  - notes
+  - wiki
+  - knowledge-management
+  - markdown
+maintainers:
+  - name: Fredrik Steen
+icon: https://raw.githubusercontent.com/silverbulletmd/silverbullet/main/web/icon.png
