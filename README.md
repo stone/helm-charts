@@ -5,6 +5,7 @@ A collection of Helm charts
 ## Available Charts
 
 - [its-mytabs](charts/its-mytabs/) - Music notation and tab management application
+- [silverbullet](charts/silverbullet/) - Modern note-taking and personal knowledge management system
 
 ## Usage
 
@@ -20,6 +21,7 @@ helm repo update
 ```bash
 # Install its-mytabs chart
 helm install my-release stone/its-mytabs
+helm install my-release stone/silverbullet
 
 # Install with custom values
 helm install my-release stone/its-mytabs -f values.yaml
