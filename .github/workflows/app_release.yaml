@@ -102,7 +102,7 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@v1.0.0
         with:
-          github_token: ${{ secrets.BOT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
 
       - name: Create and push tag
@@ -111,10 +111,10 @@ jobs:
           git tag "$TAG"
           echo "Created tag: $TAG"
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push tag
         uses: ad-m/github-push-action@v1.0.0
         with:
-          github_token: ${{ secrets.BOT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           tags: true
