@@ -100,7 +100,7 @@ jobs:
           git commit -m "chore(${{ steps.bump_version.outputs.chart_name }}): bump chart to ${{ steps.bump_version.outputs.new_version }} with app version ${{ github.event.inputs.app_version }}"
 
       - name: Push changes
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v1.0.0
         with:
           github_token: ${{ secrets.BOT_TOKEN }}
           branch: ${{ github.ref }}
@@ -114,7 +114,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
 
       - name: Push tag
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v1.0.0
         with:
           github_token: ${{ secrets.BOT_TOKEN }}
           tags: true
