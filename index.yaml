@@ -52,4 +52,26 @@ entries:
     urls:
     - https://github.com/stone/helm-charts/releases/download/its-mytabs-0.0.1/its-mytabs-0.0.1.tgz
     version: 0.0.1
-generated: "2025-12-03T18:25:05.178745795Z"
+  silverbullet:
+  - apiVersion: v2
+    appVersion: 2.4.1
+    created: "2026-03-05T16:24:31.796733645Z"
+    description: A Helm chart for SilverBullet - a modern, self-contained note-taking
+      and personal knowledge management system
+    digest: ed465b83a08f6f66f290c01e96cb83d5647f96e57579996bc498e64c3e96618a
+    home: https://silverbullet.md
+    icon: https://raw.githubusercontent.com/silverbulletmd/silverbullet/main/web/icon.png
+    keywords:
+    - silverbullet
+    - notes
+    - wiki
+    - knowledge-management
+    - markdown
+    name: silverbullet
+    sources:
+    - https://github.com/silverbulletmd/silverbullet
+    type: application
+    urls:
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.2.0/silverbullet-0.2.0.tgz
+    version: 0.2.0
+generated: "2026-03-05T16:24:31.796744736Z"
