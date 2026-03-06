@@ -30,10 +30,10 @@ jobs:
             charts=$(find charts -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
           else
             # Detect changed charts
-            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null || echo "")
-            if [ -z "$changed_files" ]; then
-              # Fallback for PRs
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               changed_files=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            else
+              changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
             fi
             charts=$(echo "$changed_files" | grep '^charts/' | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n")[:-1]')
           fi
