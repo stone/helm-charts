@@ -36,9 +36,17 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.BOT_TOKEN }}"
 
+      - name: Get chart name from tag
+        id: chart
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          CHART_NAME="${TAG%-[0-9]*.[0-9]*.[0-9]*}"
+          echo "name=${CHART_NAME}" >> "$GITHUB_OUTPUT"
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
         env:
           CR_TOKEN: "${{ secrets.BOT_TOKEN }}"
         with:
           config: .github/cr.yaml
+          charts_dir: charts/${{ steps.chart.outputs.name }}
