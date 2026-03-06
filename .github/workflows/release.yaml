@@ -57,21 +57,17 @@ jobs:
         run: |
           cr upload \
             --owner "${{ github.repository_owner }}" \
-            --repo "${{ github.event.repository.name }}" \
+            --git-repo "${{ github.event.repository.name }}" \
             --packages-with-index false \
             --token "${{ secrets.BOT_TOKEN }}" \
             --skip-existing
-        env:
-          CR_TOKEN: "${{ secrets.BOT_TOKEN }}"
 
       - name: Update Helm repo index
         run: |
           cr index \
             --owner "${{ github.repository_owner }}" \
-            --repo "${{ github.event.repository.name }}" \
+            --git-repo "${{ github.event.repository.name }}" \
             --pages-branch gh-pages \
             --packages-with-index false \
             --token "${{ secrets.BOT_TOKEN }}" \
             --push
-        env:
-          CR_TOKEN: "${{ secrets.BOT_TOKEN }}"
