@@ -33,6 +33,9 @@ jobs:
             # Detect changed charts
             if [[ "${{ github.event_name }}" == "pull_request" ]]; then
               changed_files=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            elif [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+              # First push to branch — diff against the full commit tree
+              changed_files=$(git diff --name-only $(git hash-object -t tree /dev/null) ${{ github.sha }})
             else
               changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
             fi
