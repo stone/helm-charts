@@ -20,8 +20,10 @@ load '_config_setup'
 }
 
 @test "Deployment uses correct image" {
+    local appVersion
+    appVersion=$(yq '.appVersion' Chart.yaml)
     image=$(helm template ${RELEASE_NAME} . | yq 'select(.kind == "Deployment") | .spec.template.spec.containers[0].image')
-    [ "$image" = "ghcr.io/silverbulletmd/silverbullet:latest" ]
+    [ "$image" = "ghcr.io/silverbulletmd/silverbullet:${appVersion}" ]
 }
 
 @test "Deployment sets custom image tag" {
