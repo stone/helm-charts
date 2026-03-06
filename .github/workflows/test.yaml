@@ -9,6 +9,7 @@ on:
       - master
     paths:
       - "charts/**"
+  workflow_call:
   workflow_dispatch:
 
 jobs:
