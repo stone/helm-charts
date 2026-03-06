@@ -2,8 +2,8 @@ apiVersion: v2
 name: silverbullet
 description: A Helm chart for SilverBullet - a modern, self-contained note-taking and personal knowledge management system
 type: application
-version: 0.3.0
-appVersion: "2.5.1"
+version: 0.4.0
+appVersion: "2.5.2"
 home: https://silverbullet.md
 sources:
   - https://github.com/silverbulletmd/silverbullet
