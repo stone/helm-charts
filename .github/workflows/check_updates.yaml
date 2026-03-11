@@ -1,0 +1,82 @@
+name: Check for App Updates
+
+on:
+  schedule:
+    # Run every other day at 08:00 UTC
+    - cron: "0 8 */2 * *"
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    strategy:
+      # Define the charts and their corresponding upstream repositories to check for updates
+      # Update the repo field with the correct owner/repo for each chart
+      matrix:
+        include:
+          - chart: silverbullet
+            repo: silverbulletmd/silverbullet
+          - chart: its-mytabs
+            repo: louislam/its-mytabs
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+
+      - name: Get current appVersion
+        id: current
+        run: |
+          CHART_PATH="charts/${{ matrix.chart }}/Chart.yaml"
+          APP_VERSION=$(grep '^appVersion:' "$CHART_PATH" | sed 's/appVersion: *"\?\([^"]*\)"\?/\1/')
+          echo "version=$APP_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Current appVersion for ${{ matrix.chart }}: $APP_VERSION"
+
+      - name: Get latest release from upstream
+        id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          LATEST=$(gh api "repos/${{ matrix.repo }}/releases/latest" --jq '.tag_name' 2>/dev/null || echo "")
+
+          # Strip leading 'v' if present
+          LATEST="${LATEST#v}"
+
+          if [ -z "$LATEST" ]; then
+            echo "Could not fetch latest release for ${{ matrix.repo }}"
+            exit 1
+          fi
+
+          echo "version=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "Latest upstream version for ${{ matrix.chart }}: $LATEST"
+
+      - name: Determine bump type
+        if: steps.current.outputs.version != steps.latest.outputs.version
+        id: bump
+        run: |
+          CURRENT="${{ steps.current.outputs.version }}"
+          LATEST="${{ steps.latest.outputs.version }}"
+
+          IFS='.' read -r cur_major cur_minor cur_patch <<< "$CURRENT"
+          IFS='.' read -r new_major new_minor new_patch <<< "$LATEST"
+
+          if [ "$new_major" -gt "$cur_major" ]; then
+            BUMP_TYPE="major"
+          elif [ "$new_minor" -gt "$cur_minor" ]; then
+            BUMP_TYPE="minor"
+          else
+            BUMP_TYPE="patch"
+          fi
+
+          echo "type=$BUMP_TYPE" >> "$GITHUB_OUTPUT"
+          echo "Detected $BUMP_TYPE bump: $CURRENT -> $LATEST"
+
+      - name: Trigger version bump
+        if: steps.current.outputs.version != steps.latest.outputs.version
+        env:
+          GH_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          echo "Update available for ${{ matrix.chart }}: ${{ steps.current.outputs.version }} -> ${{ steps.latest.outputs.version }} (${{ steps.bump.outputs.type }})"
+          gh workflow run app_release.yaml \
+            --field chart_name="${{ matrix.chart }}" \
+            --field app_version="${{ steps.latest.outputs.version }}" \
+            --field bump_type="${{ steps.bump.outputs.type }}"
