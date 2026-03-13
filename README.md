@@ -7,6 +7,11 @@ A collection of Helm charts
 - [its-mytabs](charts/its-mytabs/) - Music notation and tab management application
 - [silverbullet](charts/silverbullet/) - Modern note-taking and personal knowledge management system
 
+## Artifacthub links
+
+- [its-mytabs](https://artifacthub.io/packages/helm/stone/its-mytabs)
+- [silverbullet](https://artifacthub.io/packages/helm/stone/silverbullet)
+
 ## Usage
 
 ### Adding the Helm Repository
