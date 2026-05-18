@@ -58,7 +58,6 @@ jobs:
           cr upload \
             --owner "${{ github.repository_owner }}" \
             --git-repo "${{ github.event.repository.name }}" \
-            --packages-with-index false \
             --token "${{ secrets.BOT_TOKEN }}" \
             --skip-existing
 
@@ -69,6 +68,5 @@ jobs:
             --owner "${{ github.repository_owner }}" \
             --git-repo "${{ github.event.repository.name }}" \
             --pages-branch gh-pages \
-            --packages-with-index false \
             --token "${{ secrets.BOT_TOKEN }}" \
             --push
