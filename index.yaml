@@ -16,7 +16,7 @@ entries:
     name: its-mytabs
     type: application
     urls:
-    - its-mytabs-0.2.1.tgz
+    - https://github.com/stone/helm-charts/releases/download/its-mytabs-0.2.1/its-mytabs-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v2
     appVersion: 1.6.1
@@ -106,7 +106,7 @@ entries:
     - https://github.com/silverbulletmd/silverbullet
     type: application
     urls:
-    - silverbullet-0.8.0.tgz
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.8.0/silverbullet-0.8.0.tgz
     version: 0.8.0
   - apiVersion: v2
     appVersion: 2.7.0
@@ -127,7 +127,7 @@ entries:
     - https://github.com/silverbulletmd/silverbullet
     type: application
     urls:
-    - silverbullet-0.7.0.tgz
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.7.0/silverbullet-0.7.0.tgz
     version: 0.7.0
   - apiVersion: v2
     appVersion: 2.6.1
@@ -148,7 +148,7 @@ entries:
     - https://github.com/silverbulletmd/silverbullet
     type: application
     urls:
-    - silverbullet-0.6.0.tgz
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.6.0/silverbullet-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v2
     appVersion: 2.5.2
@@ -169,7 +169,7 @@ entries:
     - https://github.com/silverbulletmd/silverbullet
     type: application
     urls:
-    - silverbullet-0.5.0.tgz
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.5.0/silverbullet-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v2
     appVersion: 2.5.1
