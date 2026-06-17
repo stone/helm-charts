@@ -88,6 +88,27 @@ entries:
     version: 0.0.1
   silverbullet:
   - apiVersion: v2
+    appVersion: 2.9.0
+    created: "2026-06-17T14:14:46.011479917Z"
+    description: A Helm chart for SilverBullet - a modern, self-contained note-taking
+      and personal knowledge management system
+    digest: 657144ece94925f7793d821a5a325711e48edd1b477a1d20323ad308dfc1e9e4
+    home: https://silverbullet.md
+    icon: https://raw.githubusercontent.com/silverbulletmd/silverbullet/refs/heads/main/client/images/favicon.png
+    keywords:
+    - silverbullet
+    - notes
+    - wiki
+    - knowledge-management
+    - markdown
+    name: silverbullet
+    sources:
+    - https://github.com/silverbulletmd/silverbullet
+    type: application
+    urls:
+    - https://github.com/stone/helm-charts/releases/download/silverbullet-0.9.0/silverbullet-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
     appVersion: 2.8.1
     created: "2026-05-21T11:31:08.071936398Z"
     description: A Helm chart for SilverBullet - a modern, self-contained note-taking
@@ -234,4 +255,4 @@ entries:
     urls:
     - https://github.com/stone/helm-charts/releases/download/silverbullet-0.2.0/silverbullet-0.2.0.tgz
     version: 0.2.0
-generated: "2026-05-21T11:31:08.071981636Z"
+generated: "2026-06-17T14:14:46.01152437Z"
