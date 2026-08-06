@@ -18,6 +18,8 @@ jobs:
             repo: silverbulletmd/silverbullet
           - chart: its-mytabs
             repo: louislam/its-mytabs
+          - chart: meerkat-crm
+            repo: fbuchner/meerkat-crm
 
     steps:
       - name: Checkout code

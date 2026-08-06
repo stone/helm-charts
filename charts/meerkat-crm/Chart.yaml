@@ -1,0 +1,15 @@
+apiVersion: v2
+name: meerkat-crm
+description: A Helm chart for Meerkat CRM - a personal CRM for managing contacts, relationships, and communications
+type: application
+version: 0.1.0
+appVersion: "1.6.2"
+home: https://github.com/fbuchner/meerkat-crm
+icon: https://github.com/fbuchner/meerkat-crm/raw/main/docs/assets/meerkat-crm-logo.svg
+sources:
+  - https://github.com/fbuchner/meerkat-crm
+keywords:
+  - meerkat-crm
+  - crm
+  - contacts
+  - self-hosted
