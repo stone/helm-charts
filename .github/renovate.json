@@ -94,6 +94,16 @@
       "depNameTemplate": "louislam/its-mytabs",
       "datasourceTemplate": "docker",
       "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update appVersion in meerkat-crm Chart.yaml when matching Docker image",
+      "fileMatch": ["charts/meerkat-crm/Chart\\.ya?ml$"],
+      "matchStrings": [
+        "appVersion:\\s+[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "depNameTemplate": "ghcr.io/fbuchner/meerkat-crm",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "semver"
     }
   ],
   "vulnerabilityAlerts": {

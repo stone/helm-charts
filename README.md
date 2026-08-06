@@ -5,11 +5,13 @@ A collection of Helm charts
 ## Available Charts
 
 - [its-mytabs](charts/its-mytabs/) - Music notation and tab management application
+- [meerkat-crm](charts/meerkat-crm/) - Personal CRM for managing contacts, relationships, and communications
 - [silverbullet](charts/silverbullet/) - Modern note-taking and personal knowledge management system
 
 ## Artifacthub links
 
 - [its-mytabs](https://artifacthub.io/packages/helm/stone/its-mytabs)
+- [meerkat-crm](https://artifacthub.io/packages/helm/stone/meerkat-crm)
 - [silverbullet](https://artifacthub.io/packages/helm/stone/silverbullet)
 
 ## Usage
