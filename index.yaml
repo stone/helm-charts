@@ -86,6 +86,27 @@ entries:
     urls:
     - https://github.com/stone/helm-charts/releases/download/its-mytabs-0.0.1/its-mytabs-0.0.1.tgz
     version: 0.0.1
+  meerkat-crm:
+  - apiVersion: v2
+    appVersion: 1.6.2
+    created: "2026-08-07T09:04:24.607053306Z"
+    description: A Helm chart for Meerkat CRM - a personal CRM for managing contacts,
+      relationships, and communications
+    digest: f4804ce30d412b6378ba8889320b64c1c0319ecfb203365a72aaa7cc4e427910
+    home: https://github.com/fbuchner/meerkat-crm
+    icon: https://github.com/fbuchner/meerkat-crm/raw/main/docs/assets/meerkat-crm-logo.svg
+    keywords:
+    - meerkat-crm
+    - crm
+    - contacts
+    - self-hosted
+    name: meerkat-crm
+    sources:
+    - https://github.com/fbuchner/meerkat-crm
+    type: application
+    urls:
+    - https://github.com/stone/helm-charts/releases/download/meerkat-crm-0.2.1/meerkat-crm-0.2.1.tgz
+    version: 0.2.1
   silverbullet:
   - apiVersion: v2
     appVersion: 2.10.0
@@ -276,4 +297,4 @@ entries:
     urls:
     - https://github.com/stone/helm-charts/releases/download/silverbullet-0.2.0/silverbullet-0.2.0.tgz
     version: 0.2.0
-generated: "2026-07-29T10:43:33.404581032Z"
+generated: "2026-08-07T09:04:24.607088612Z"
