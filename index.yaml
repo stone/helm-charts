@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   its-mytabs:
   - apiVersion: v2
+    appVersion: 1.7.0
+    created: "2026-08-15T08:33:38.849676106Z"
+    description: A Helm chart for its-mytabs
+    digest: 9e6df5700a99ea5663e26e2cfc34de38d37c35ce8a973d7a9aaf12cc81a35a5c
+    home: https://github.com/louislam/its-mytabs
+    icon: https://raw.githubusercontent.com/louislam/its-mytabs/refs/heads/master/frontend/public/favicon.ico
+    keywords:
+    - its-mytabs
+    - music
+    - self-hosted
+    - notation
+    name: its-mytabs
+    type: application
+    urls:
+    - https://github.com/stone/helm-charts/releases/download/its-mytabs-0.3.0/its-mytabs-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
     appVersion: 1.6.2
     created: "2026-03-30T09:16:25.810474002Z"
     description: A Helm chart for its-mytabs
@@ -317,4 +334,4 @@ entries:
     urls:
     - https://github.com/stone/helm-charts/releases/download/silverbullet-0.2.0/silverbullet-0.2.0.tgz
     version: 0.2.0
-generated: "2026-08-13T09:16:44.123032844Z"
+generated: "2026-08-15T08:33:38.849725509Z"
