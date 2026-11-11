@@ -2,8 +2,8 @@ apiVersion: v2
 name: meerkat-crm
 description: A Helm chart for Meerkat CRM - a personal CRM for managing contacts, relationships, and communications
 type: application
-version: 0.3.1
-appVersion: "1.7.1"
+version: 0.4.0
+appVersion: "1.8.0"
 home: https://github.com/fbuchner/meerkat-crm
 icon: https://github.com/fbuchner/meerkat-crm/raw/main/docs/assets/meerkat-crm-logo.svg
 sources:
